@@ -16,7 +16,7 @@ fun Application.module() {
             call.respondText("Hello World!")
         }
         get("/ip") {
-            val ip = call.request.origin.remoteAddress
+            val ip = call.request.origin.remoteHost
             call.respond(ip)
         }
     }
