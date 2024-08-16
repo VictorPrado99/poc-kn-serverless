@@ -1,14 +1,21 @@
+val ktor_version: String by project
+val kotlin_version: String by project
+val logback_version: String by project
+val kotless_version: String by project
+
+repositories {
+    mavenLocal()
+    maven(url = uri("https://packages.jetbrains.team/maven/p/ktls/maven"))
+    mavenCentral()
+}
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinxSerialization)
 }
 
-group = "me.user"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
+group = "cloud.reivax.samples"
+version = "0.0.1"
 
 kotlin {
     val hostOs = System.getProperty("os.name")
@@ -30,10 +37,17 @@ kotlin {
             }
         }
     }
-
     sourceSets {
         nativeMain.dependencies {
             implementation(libs.kotlinxSerializationJson)
+            implementation("io.ktor:ktor-server-core:$ktor_version")
+            implementation("io.ktor:ktor-server-cio:$ktor_version")
+            implementation("ch.qos.logback:logback-classic:1.2.11")
+
+        }
+        nativeTest.dependencies {
+            implementation(kotlin("test"))
+            implementation("io.ktor:ktor-server-test-host:$ktor_version")
         }
     }
 }
