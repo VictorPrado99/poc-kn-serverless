@@ -51,3 +51,8 @@ kotlin {
         }
     }
 }
+
+tasks.withType<Wrapper> {
+    gradleVersion = "8.6"
+    distributionType = Wrapper.DistributionType.BIN
+}
