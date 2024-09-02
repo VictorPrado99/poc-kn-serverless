@@ -2,19 +2,21 @@ FROM  --platform=linux/amd64 gradle:8.6.0-jdk21 as builder
 LABEL authors="reivax"
 
 WORKDIR /app
-ENV KONAN_DATA_DIR=/app/gradle/.gradle
+ENV KONAN_DATA_DIR=/home/gradle/.gradle
 COPY . .
 
-RUN ./gradlew nativeBinaries
-
-FROM busybox:1.35.0-uclibc as busybox
+RUN \
+    --mount=type=cache,target=/app/.gradle,rw \
+    --mount=type=cache,target=/app/bin/build,rw \
+    --mount=type=cache,target=/home/gradle/.gradle,rw \
+    ./gradlew nativeBinaries --no-daemon
 
 FROM scratch
 
 WORKDIR /app
 
 # Now copy the static shell into base image.
-COPY --from=busybox /bin/sh /bin/sh
+COPY --from=builder /bin/sh /bin/sh
 
 ## You may also copy all necessary executables into distroless image.
 #COPY --from=busybox /bin/mkdir /bin/mkdir
